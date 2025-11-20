@@ -1,9 +1,7 @@
 import React from "react";
 import ReactDom from "react-dom/client";
-import Avatar from "./components/avatar";
-import Info from "./components/info";
-import SkillList from "./components/skillist";
-import "./styles.css";
+
+import "./index.css";
 
 const pizzaData = [
   {
@@ -53,104 +51,88 @@ const pizzaData = [
 function App() {
   return (
     <div className="container">
-      <div className="card">
-        <Avatar />
-        <div className="data">
-          <Info />
-          <SkillList />
-        </div>
-      </div>
+      <Menu />
     </div>
+  );
+}
+
+function Menu() {
+  const hour = new Date().getHours();
+  const openHour = 12;
+  const closeHour = 22;
+  const isOpen = hour >= openHour && hour <= closeHour;
+  const pizzas = pizzaData;
+  return (
+    <main className="menu">
+      <Header />
+      <h2>Our menu</h2>
+      {pizzas.length > 0 ? (
+        <>
+          <p>kjfkjs sefjesnfkjefn fjsekjf kesjfsekjfkfe sjbk skfej\kjb</p>
+          <Order pizzas={pizzas} />
+        </>
+      ) : (
+        <p>Sorry we have not any pizzas</p>
+      )}
+
+      <Footer isOpen={isOpen} closeHour={closeHour} openHour={openHour} />
+    </main>
   );
 }
 
 function Header() {
   return (
-    <header className="header footer">
+    <header className="header">
       <h1>Fast React Pizza Co.</h1>
     </header>
   );
 }
-function Menu() {
+
+function Order({ pizzas }) {
   return (
-    <main className="menu">
-      <h2>Our menu</h2>
-      <Pizza
-        name="Pizza Spinachi"
-        ingredients="Tomato,mozarella,spinach and ricotta cheese"
-        photoName="pizzas/spinaci.jpg"
-        price={10}
-      />
-      <Pizza
-        name="Focaccia"
-        ingredients="Bread with italian olive oil and rosemary"
-        photoName="pizzas/focaccia.jpg"
-        price={12}
-      />
-    </main>
+    <ul className="pizzas">
+      {pizzas.map((pizza) => (
+        <Pizza pizzaObj={pizza} key={pizza.name} />
+      ))}
+    </ul>
   );
 }
 
-function Pizza(props) {
+function Pizza({ pizzaObj }) {
   return (
-    <div className="pizza">
-      <img src={props.photoName} alt="" />
-
+    // <li className={pizzaObj.soldOut ? "pizza sold-out" : "pizza"}> my-version
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt="" />
       <div>
-        <h3>{props.name}</h3>
-        <p>{props.ingredients}</p>
-        <p>{props.price + 3}</p>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+        <p>
+          {pizzaObj.soldOut ? (
+            <span>SOLD OUT</span>
+          ) : (
+            <span>{pizzaObj.price}</span>
+          )}
+        </p>
       </div>
-    </div>
+    </li>
   );
 }
-function Footer() {
-  const hour = new Date().getHours();
-  const openHour = 12;
-  const closeHour = 22;
-  const isOpen = hour >= openHour && hour <= closeHour;
-  console.log(isOpen);
-
+function Footer({ isOpen, closeHour, openHour }) {
   return (
     <footer className="footer">
-      {new Date().toLocaleDateString()} We're cuurently open!
+      {isOpen && (
+        <div className="order">
+          <p>
+            Come visit us from {openHour}:00 or order online. We're currently
+            open until {closeHour}:00.
+          </p>
+          <button className="btn">Order</button>
+        </div>
+      )}
     </footer>
   );
 }
 
-// function Pizza() {
-//   return pizzaData.map((item) => {
-//     return (
-//       <div
-//         style={{
-//           display: "flex",
-//           alignItems: "center",
-//           padding: "10px",
-//           gap: "20px",
-//         }}
-//       >
-//         <div
-//           style={{
-//             width: "100px",
-//             height: "auto",
-//           }}
-//         >
-//           <img
-//             style={{
-//               width: "100%",
-//             }}
-//             src={item.photoName}
-//             alt=""
-//           />
-//         </div>
-//         <div>
-//           <h3>{item.name}</h3>
-//           <p style={{ textAlign: "center" }}>{item.ingredients}</p>
-//         </div>
-//       </div>
-//     );
-//   });
-// }
 const root = ReactDom.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
