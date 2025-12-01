@@ -1,65 +1,53 @@
 import { useState } from "react";
 
-const messages = [
-  "Learn React ⚛️",
-  "Apply for jobs 💼",
-  "Invest your new income 🤑",
-];
-
 const App = () => {
-  const [step, setStep] = useState(1);
-  const [isOpen, setIsOpen] = useState(true);
-  function handlePrevious() {
-    if (step > 1) setStep((prev) => prev - 1);
+  const [plus, setPlus] = useState(0);
+  const [increase, setIncrease] = useState(1);
+  const date = new Date();
+  date.setDate(date.getDate() + plus);
+
+  const handlerPlus = () => setIncrease((prev) => prev + 1);
+  const handlerMinus = () => setIncrease((prev) => prev - 1);
+
+  function handlerRise() {
+    return setPlus(plus + increase);
   }
-  function handleNext() {
-    if (step < 3) setStep((prev) => prev + 1);
+  function handlerDown() {
+    return setPlus(plus - increase);
   }
 
-  function hanleSwitch() {
-    setIsOpen((onoff) => {
-      setIsOpen(!onoff);
-    });
-  }
   return (
-    <>
-      <button className="close" onClick={() => setIsOpen((is) => !is)}>
-        &times;
-      </button>
-      {isOpen && (
-        <div className="steps">
-          <div className="numbers">
-            <div className={step >= 1 && "active"}>1</div>
-            <div className={step >= 2 && "active"}>2</div>
-            <div className={step >= 3 && "active"}>3</div>
-          </div>
-          <p className="message">
-            {step >= 1 && step <= 3 ? (
+    <div className="container">
+      <div className="counter">
+        <button onClick={handlerMinus}>-</button>
+        <div>Step: {increase}</div>
+        <button onClick={handlerPlus}>+</button>
+      </div>
+      <div className="counter">
+        <button onClick={handlerDown}>-</button>
+        <div>Count: {plus}</div>
+        <button onClick={handlerRise}>+</button>
+      </div>
+      <div>
+        {plus === 0 ? (
+          "Today is"
+        ) : (
+          <span>
+            {plus > 0 ? (
               <span>
-                Step {step}: {messages[step - 1]}
+                {" "}
+                {plus} {plus === 1 ? "day" : "days"} from Today is
               </span>
             ) : (
-              <span>Error</span>
+              <span>
+                {Math.abs(plus)} {plus === -1 ? "day" : "days"} ago was{" "}
+              </span>
             )}
-          </p>
-          <div className="buttons">
-            <button
-              style={{ backgroundColor: "#7950f2", color: "#fff" }}
-              onClick={handlePrevious}
-              // onMouseEnter={() => alert("sseekjfjekfeskf")}
-            >
-              Previous
-            </button>
-            <button
-              style={{ backgroundColor: "#7950f2", color: "#fff" }}
-              onClick={handleNext}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-      )}
-    </>
+          </span>
+        )}{" "}
+        {date.toDateString()}{" "}
+      </div>
+    </div>
   );
 };
 
