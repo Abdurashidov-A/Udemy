@@ -1,95 +1,63 @@
 import { useState } from "react";
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: false },
-  { id: 3, description: "Cap", quantity: 12, packed: true },
+const questions = [
+  {
+    id: 3457,
+    question: "What language is React based on?",
+    answer: "JavaScript",
+  },
+  {
+    id: 7336,
+    question: "What are the building blocks of React apps?",
+    answer: "Components",
+  },
+  {
+    id: 8832,
+    question: "What's the name of the syntax we use to describe a UI in React?",
+    answer: "JSX",
+  },
+  {
+    id: 1297,
+    question: "How to pass data from parent to child components?",
+    answer: "Props",
+  },
+  {
+    id: 9103,
+    question: "How to give components memory?",
+    answer: "useState hook",
+  },
+  {
+    id: 2002,
+    question:
+      "What do we call an input element that is completely synchronised with state?",
+    answer: "Controlled element",
+  },
 ];
 
 const App = () => {
-  return (
-    <div className="app">
-      <Logo />
-      <Form />
-      <PackingList />
-      <Stats />
-    </div>
-  );
+  return <FlashCards />;
 };
 
-const Logo = () => {
-  return <h1>🌴 Far Away 👜</h1>;
-};
-const Form = () => {
-  const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState(1);
+function FlashCards() {
+  const [selectedId, setSelectedId] = useState(null);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    if (!description) return;
-
-    const newItem = { id: Date.now(), description, quantity, packed: false };
-    initialItems.push(newItem);
-    console.log("initialItems", initialItems);
-
-    setDescription("");
-    setQuantity(1);
+  function handleClick(id) {
+    setSelectedId(id !== selectedId ? id : null);
   }
 
   return (
-    <form className="add-form" onSubmit={handleSubmit}>
-      What do you need for your trip? 🏖
-      <select
-        name=""
-        id=""
-        value={quantity}
-        onChange={(e) => setQuantity(Number(e.target.value))}
-      >
-        {Array.from({ length: 21 }, (_, i) => i + 1).map((item) => (
-          <option value={item} key={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-      <input
-        type="text"
-        placeholder="Item..."
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <button>Add</button>
-    </form>
-  );
-};
-const PackingList = () => {
-  return (
-    <div className="list">
-      <ul>
-        {initialItems.map((item) => (
-          <Item item={item} key={item.id} />
-        ))}
-      </ul>
+    <div className="flashcards">
+      {questions.map((item) => (
+        <div
+          key={item.id}
+          className={item.id === selectedId ? "selected" : ""}
+          onClick={() => handleClick(item.id)}
+        >
+          <p>{item.id === selectedId ? item.answer : item.question} </p>
+        </div>
+      ))}
     </div>
   );
-};
-
-const Item = ({ item }) => {
-  return (
-    <li>
-      <span className={item.packed && "done"}>
-        {item.quantity} {item.description}
-      </span>
-      <button>❌</button>
-    </li>
-  );
-};
-const Stats = () => {
-  return (
-    <footer className="stats">
-      <em>You have X items on your list , and you already packed X (X%)</em>
-    </footer>
-  );
-};
+}
 
 export default App;
