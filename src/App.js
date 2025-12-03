@@ -1,63 +1,67 @@
 import { useState } from "react";
 
-const questions = [
-  {
-    id: 3457,
-    question: "What language is React based on?",
-    answer: "JavaScript",
-  },
-  {
-    id: 7336,
-    question: "What are the building blocks of React apps?",
-    answer: "Components",
-  },
-  {
-    id: 8832,
-    question: "What's the name of the syntax we use to describe a UI in React?",
-    answer: "JSX",
-  },
-  {
-    id: 1297,
-    question: "How to pass data from parent to child components?",
-    answer: "Props",
-  },
-  {
-    id: 9103,
-    question: "How to give components memory?",
-    answer: "useState hook",
-  },
-  {
-    id: 2002,
-    question:
-      "What do we call an input element that is completely synchronised with state?",
-    answer: "Controlled element",
-  },
-];
-
 const App = () => {
-  return <FlashCards />;
-};
+  const [plus, setPlus] = useState(0);
+  const [increase, setIncrease] = useState(1);
+  const date = new Date();
+  date.setDate(date.getDate() + plus);
 
-function FlashCards() {
-  const [selectedId, setSelectedId] = useState(null);
-
-  function handleClick(id) {
-    setSelectedId(id !== selectedId ? id : null);
+  function handlerRise() {
+    return setPlus(plus + increase);
+  }
+  function handlerDown() {
+    return setPlus(plus - increase);
+  }
+  function handlerReset() {
+    setPlus(0);
+    setIncrease(1);
   }
 
   return (
-    <div className="flashcards">
-      {questions.map((item) => (
-        <div
-          key={item.id}
-          className={item.id === selectedId ? "selected" : ""}
-          onClick={() => handleClick(item.id)}
-        >
-          <p>{item.id === selectedId ? item.answer : item.question} </p>
-        </div>
-      ))}
+    <div className="container">
+      <div className="counter">
+        <input
+          type="range"
+          min="0"
+          max="10"
+          value={increase}
+          onChange={(e) => setIncrease(Number(e.target.value))}
+        />
+        <span>{increase}</span>
+      </div>
+      <div className="counter">
+        <button onClick={handlerDown}>-</button>
+        <input
+          type="number"
+          value={plus}
+          onChange={(e) => setPlus(Number(e.target.value))}
+        />
+        <button onClick={handlerRise}>+</button>
+      </div>
+      <div>
+        {plus === 0 ? (
+          "Today is"
+        ) : (
+          <span>
+            {plus > 0 ? (
+              <span>
+                {" "}
+                {plus} {plus === 1 ? "day" : "days"} from Today is
+              </span>
+            ) : (
+              <span>
+                {Math.abs(plus)} {plus === -1 ? "day" : "days"} ago was{" "}
+              </span>
+            )}
+          </span>
+        )}{" "}
+        {date.toDateString()}{" "}
+      </div>
+      {(plus !== 0 || increase !== 1) && (
+        <button onClick={handlerReset}>RESET</button>
+      )}
     </div>
   );
-}
+};
 
 export default App;
