@@ -1,58 +1,110 @@
 import { useState } from "react";
 
-const faqs = [
-  {
-    id: 1,
-    title: "Where are these chairs assembled?",
-    text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium, quaerat temporibus quas dolore provident nisi ut aliquid ratione beatae sequi aspernatur veniam repellendus.",
-  },
-  {
-    id: 2,
-    title: "How long do I have to return my chair?",
-    text: "Pariatur recusandae dignissimos fuga voluptas unde optio nesciunt commodi beatae, explicabo natus.",
-  },
-  {
-    id: 3,
-    title: "Do you ship to countries outside the EU?",
-    text: "Excepturi velit laborum, perspiciatis nemo perferendis reiciendis aliquam possimus dolor sed! Dolore laborum ducimus veritatis facere molestias!",
-  },
+const messages = [
+  "Learn React ⚛️",
+  "Apply for jobs 💼",
+  "Invest your new income 🤑",
 ];
 
 const App = () => {
   return (
     <div>
-      <Accardion data={faqs} />
+      <Step />
+
+      <div className="message">
+        <StepMessage step={1}>
+          <p>Hello my man</p>
+          <p>wow</p>
+        </StepMessage>
+      </div>
+      <div className="message">
+        <StepMessage step={2}>
+          <p>Hello my bro</p>
+          <p>wow</p>
+        </StepMessage>
+      </div>
     </div>
   );
 };
 
-const Accardion = ({ data }) => {
-  return (
-    <div className="accordion">
-      {data.map((item, idx) => (
-        <AccordionItem item={item} num={idx} />
-      ))}
-    </div>
-  );
-};
+function Step() {
+  const [step, setStep] = useState(1);
+  const [isOpen, setIsOpen] = useState(true);
+  function handlePrevious() {
+    if (step > 1) setStep((prev) => prev - 1);
+  }
+  function handleNext() {
+    if (step < 3) setStep((prev) => prev + 1);
+  }
 
-function AccordionItem({ item, num }) {
-  const [click, setClick] = useState(false);
-
-  function handleToggle() {
-    setClick((click) => !click);
+  function hanleSwitch() {
+    setIsOpen((onoff) => {
+      setIsOpen(!onoff);
+    });
   }
   return (
-    <div
-      key={item.id}
-      className={`item ${click && "open"}`}
-      onClick={handleToggle}
+    <>
+      <button className="close" onClick={() => setIsOpen((is) => !is)}>
+        &times;
+      </button>
+      {isOpen && (
+        <div className="steps">
+          <div className="numbers">
+            <div className={step >= 1 && "active"}>1</div>
+            <div className={step >= 2 && "active"}>2</div>
+            <div className={step >= 3 && "active"}>3</div>
+          </div>
+          <p className="message">
+            <StepMessage step={step}>{messages[step - 1]}</StepMessage>
+            <div className="buttons">
+              {" "}
+              <Button
+                textColor={"#000"}
+                bgColor={"#e3e3e3"}
+                handleFunction={handlePrevious}
+              >
+                <span>Just Click</span>
+              </Button>
+            </div>
+          </p>
+          <div className="buttons">
+            <Button
+              textColor={"#fff"}
+              bgColor={"#7950f2"}
+              handleFunction={handlePrevious}
+            >
+              👈<span>Previous</span>
+            </Button>
+            <Button
+              textColor={"#fff"}
+              bgColor={"#7950f2"}
+              handleFunction={handleNext}
+            >
+              <span>Next</span>👉
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function Button({ textColor, bgColor, handleFunction, children }) {
+  return (
+    <button
+      style={{ backgroundColor: bgColor, color: textColor }}
+      onClick={handleFunction}
     >
-      <p className="number">{num < 9 ? `0${num + 1}` : num + 1}</p>
-      <p className="title">{item.title}</p>
-      <p className="icon">{click ? "-" : "+"}</p>
-      {click && <div className="content-box">{item.text}</div>}
-    </div>
+      {children}
+    </button>
+  );
+}
+
+function StepMessage({ step, children }) {
+  return (
+    <span>
+      Step {step}: {children}
+    </span>
   );
 }
 
