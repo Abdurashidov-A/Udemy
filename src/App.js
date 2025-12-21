@@ -1,68 +1,86 @@
 import { useState } from "react";
 
-const faqs = [
-  {
-    id: 1,
-    title: "Where are these chairs assembled?",
-    text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium, quaerat temporibus quas dolore provident nisi ut aliquid ratione beatae sequi aspernatur veniam repellendus.",
-  },
-  {
-    id: 2,
-    title: "How long do I have to return my chair?",
-    text: "Pariatur recusandae dignissimos fuga voluptas unde optio nesciunt commodi beatae, explicabo natus.",
-  },
-  {
-    id: 3,
-    title: "Do you ship to countries outside the EU?",
-    text: "Excepturi velit laborum, perspiciatis nemo perferendis reiciendis aliquam possimus dolor sed! Dolore laborum ducimus veritatis facere molestias!",
-  },
-];
-
 const App = () => {
+  const [cost, setCost] = useState("");
+  const [tip, setTip] = useState(0);
+  const [tipSecond, setTipSecond] = useState(0);
+  const handleReset = () => {
+    setCost("");
+    setTip(0);
+    setTipSecond(0);
+  };
+
+  return (
+    <div className="app">
+      <BillInput cost={cost} setCost={setCost} />
+      <ServicePercentage percentage={tip} settingTip={setTip}>
+        How did you like the service?
+      </ServicePercentage>
+      <ServicePercentage percentage={tipSecond} settingTip={setTipSecond}>
+        How did your friend like the service?
+      </ServicePercentage>
+      <br />
+      {cost ? (
+        <div>
+          <Text cost={cost} tip={tip} tipSecond={tipSecond} />
+          <Reset onReset={handleReset} />
+        </div>
+      ) : (
+        ""
+      )}
+    </div>
+  );
+};
+
+function BillInput({ cost, setCost }) {
   return (
     <div>
-      <Accardion data={faqs} />
+      How much was the bill?
+      <input
+        type="text"
+        value={cost}
+        onChange={(e) => setCost(Number(e.target.value))}
+      />
     </div>
   );
-};
+}
 
-const Accardion = ({ data }) => {
-  const [click, setClick] = useState(null);
-  console.log("click", click);
-
+function ServicePercentage({ children, settingTip, percentage }) {
   return (
-    <div className="accordion">
-      {data.map((item, idx) => (
-        <AccordionItem
-          title={item.title}
-          num={idx}
-          click={click}
-          setClick={setClick}
-        >
-          {item.text}
-        </AccordionItem>
-      ))}
-      <AccordionItem title="Ashnaqa" num="3" click={click} setClick={setClick}>
-        <p>Hello my man, how are you</p>
-        <p>Hello my man, how are you</p>
-        <p>Hello my man, how are you</p>
-        <p>Hello my man, how are you</p>
-      </AccordionItem>
+    <div>
+      {children}
+      <select
+        value={percentage}
+        onChange={(e) => settingTip(Number(e.target.value))}
+      >
+        <option value="">Dissatisfied (0%)</option>
+        <option value="5">It was okay (5%)</option>
+        <option value="10">It was good (10%)</option>
+        <option value="20">Absolutely amazing! (20%)</option>
+      </select>
     </div>
   );
-};
+}
 
-function AccordionItem({ id, num, click, setClick, children, title }) {
-  let isOpen = num === click;
-  function handleToggle() {
-    setClick(isOpen ? null : num);
-  }
+function Text({ cost, tip, tipSecond }) {
+  const totalCost = cost + ((tip + tipSecond) * cost) / 2 / 100;
   return (
-    <div key={id} className={`item ${isOpen && "open"}`} onClick={handleToggle}>
-      <p className="number">{num < 9 ? `0${num + 1}` : num + 1}</p>
-      <p className="title">{title}</p>
-      <p className="icon">{isOpen ? "-" : "+"}</p>
-      {isOpen && <div className="content-box">{children}</div>}
+    <>
+      <h3>
+        You pay ${totalCost} (${cost} + ${((tip + tipSecond) * cost) / 2 / 100}
+        tip)
+      </h3>
+      <br />
+    </>
+  );
+}
+
+function Reset({ onReset }) {
+  return (
+    <div>
+      <button className="button" onClick={onReset}>
+        Reset
+      </button>
     </div>
   );
 }
