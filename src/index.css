@@ -87,6 +87,20 @@ body {
   align-items: center;
 }
 
+.Items {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 200px;
+}
+
+.Item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .checkedItem {
   display: flex;
   width: 100%;

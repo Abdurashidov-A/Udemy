@@ -1,129 +1,104 @@
 import { useState } from "react";
 
 export default function App() {
-  const [itemArray, setItemArray] = useState([
+  const [items, setItem] = useState([
     {
-      quantity: 1,
-      name: "Apple",
-      isSelected: false,
-    },
-    {
-      quantity: 2,
       name: "Banana",
+      quantity: 5,
       isSelected: true,
     },
     {
+      name: "Aplle",
       quantity: 3,
-      name: "Pineapple",
+      isSelected: true,
+    },
+    {
+      name: "Mango",
+      quantity: 2,
       isSelected: false,
     },
   ]);
 
-  const [count, setCount] = useState(null);
-
   const [inputValue, setInputValue] = useState("");
-  const [total, setTotal] = useState(6);
+  const [totalValue, setTotalValue] = useState(10);
 
   function handleAddItem() {
-    if (!inputValue) return;
-
-    const item = {
-      quantity: 1,
+    const newItem = {
       name: inputValue,
       isSelected: false,
+      quantity: 1,
     };
 
-    setItemArray([...itemArray, item]);
-
+    setItem([...items, newItem]);
     setInputValue("");
   }
-
   function handleAdd(index) {
-    const newItems = [...itemArray];
+    const newItem = [...items];
 
-    newItems[index].quantity++;
+    newItem[index].quantity++;
 
-    setItemArray(newItems);
+    setItem(newItem);
     calculateTotal();
   }
-
   function handleMinus(index) {
-    const newItems = [...itemArray];
-    newItems[index].quantity--;
+    const newItem = [...items];
 
-    setItemArray(newItems);
+    newItem[index].quantity--;
+
+    setItem(newItem);
     calculateTotal();
   }
 
-  function handleToggle(index) {
-    const newItems = [...itemArray];
-    newItems[index].isSelected = !newItems[index].isSelected;
+  function handleChangeClass(index) {
+    const newItem = [...items];
 
-    setItemArray(newItems);
+    newItem[index].isSelected = !newItem[index].isSelected;
+
+    setItem(newItem);
   }
 
-  function calculateTotal() {
-    const total = itemArray.reduce((total, item) => {
+  function calculateTotal(item) {
+    const total = items.reduce((total, item) => {
       return total + item.quantity;
     }, 0);
 
-    setTotal(total);
+    setTotalValue(total);
   }
 
   return (
-    <div>
-      <div className="background">
-        <div className="classAddItem">
-          <input
-            className="input"
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder=" Add Item..."
-          />
-          <Button handleChange={handleAddItem}>+</Button>
-        </div>
-        <Form
-          total={total}
-          handleToggle={handleToggle}
-          itemArray={itemArray}
-          count={count}
-          setCount={setCount}
-          handleAdd={handleAdd}
-          handleMinus={handleMinus}
+    <div className="background">
+      <div className="">
+        <input
+          className="input"
+          type="text"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder=" Add Item..."
         />
+        <button onClick={handleAddItem}>+</button>
       </div>
-    </div>
-  );
-}
-function Form({ itemArray, handleAdd, handleMinus, handleToggle, total }) {
-  return (
-    <div>
-      {itemArray.map((item, index) => (
-        <div className="form" key={index}>
-          <div onClick={() => handleToggle(index)}>
-            <div className={item.isSelected ? "checkedItem" : "form-text"}>
+
+      <div className="Items">
+        {items.map((item, index) => (
+          <div className="Item">
+            <div
+              className={item.isSelected ? "checkedItem" : "classAddItem"}
+              key={item.index}
+              onClick={() => handleChangeClass(index)}
+            >
               <input type="checkbox" />
-              <p>{item.name}</p>
+              <div>{item.name}</div>
+            </div>
+
+            <div className="classAddItem">
+              <button onClick={() => handleMinus(index)}>-</button>
+              {item.quantity}
+              <button onClick={() => handleAdd(index)}>+</button>
             </div>
           </div>
-
-          <div className="count">
-            <Button handleChange={() => handleMinus(index)}>-</Button>
-            <span>{item.quantity ? item.quantity : 0}</span>
-            <Button handleChange={() => handleAdd(index)}>+</Button>
-          </div>
-        </div>
-      ))}
-      <div>{total}</div>
+        ))}
+        {totalValue}
+      </div>
     </div>
-  );
-}
-
-function Button({ children, handleChange }) {
-  return (
-    <button className="button" onClick={handleChange}>
-      {children}
-    </button>
   );
 }
