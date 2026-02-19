@@ -63,129 +63,106 @@ export default function App() {
 
   return (
     <>
-      <Nav query={query} setQuery={setQuery} movies={movies} />
+      <nav className="nav-bar">
+        <div className="logo">
+          <span role="img">🍿</span>
+          <h1>usePopcorn</h1>
+        </div>
+        <input
+          className="search"
+          type="text"
+          placeholder="Search movies..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <p className="num-results">
+          Found <strong>{movies.length}</strong> results
+        </p>
+      </nav>
+
       <main className="main">
         <div className="box">
-          <Button isOpen={isOpen1} setIsOpen={setIsOpen1} />
-          {isOpen1 && <Movies movies={movies} />}
+          <button
+            className="btn-toggle"
+            onClick={() => setIsOpen1((open) => !open)}
+          >
+            {isOpen1 ? "–" : "+"}
+          </button>
+          {isOpen1 && (
+            <ul className="list">
+              {movies?.map((movie) => (
+                <li key={movie.imdbID}>
+                  <img src={movie.Poster} alt={`${movie.Title} poster`} />
+                  <h3>{movie.Title}</h3>
+                  <div>
+                    <p>
+                      <span>🗓</span>
+                      <span>{movie.Year}</span>
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="box">
-          <Button isOpen={isOpen2} setIsOpen={setIsOpen2} />
-
+          <button
+            className="btn-toggle"
+            onClick={() => setIsOpen2((open) => !open)}
+          >
+            {isOpen2 ? "–" : "+"}
+          </button>
           {isOpen2 && (
             <>
-              <Summary
-                watched={watched}
-                avgImdbRating={avgImdbRating}
-                avgUserRating={avgUserRating}
-                avgRuntime={avgRuntime}
-              />
-              <Watched watched={watched} />
+              <div className="summary">
+                <h2>Movies you watched</h2>
+                <div>
+                  <p>
+                    <span>#️⃣</span>
+                    <span>{watched.length} movies</span>
+                  </p>
+                  <p>
+                    <span>⭐️</span>
+                    <span>{avgImdbRating}</span>
+                  </p>
+                  <p>
+                    <span>🌟</span>
+                    <span>{avgUserRating}</span>
+                  </p>
+                  <p>
+                    <span>⏳</span>
+                    <span>{avgRuntime} min</span>
+                  </p>
+                </div>
+              </div>
+
+              <ul className="list">
+                {watched.map((movie) => (
+                  <li key={movie.imdbID}>
+                    <img src={movie.Poster} alt={`${movie.Title} poster`} />
+                    <h3>{movie.Title}</h3>
+                    <div>
+                      <p>
+                        <span>⭐️</span>
+                        <span>{movie.imdbRating}</span>
+                      </p>
+                      <p>
+                        <span>🌟</span>
+                        <span>{movie.userRating}</span>
+                      </p>
+                      <p>
+                        <span>⏳</span>
+                        <span>{movie.runtime} min</span>
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </>
           )}
         </div>
       </main>
     </>
-  );
-}
-
-function Button({ isOpen, setIsOpen }) {
-  return (
-    <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
-      {isOpen ? "–" : "+"}
-    </button>
-  );
-}
-// something
-function Nav(query, setQuery, movies) {
-  return (
-    <nav className="nav-bar">
-      <div className="logo">
-        <span role="img">🍿</span>
-        <h1>usePopcorn</h1>
-      </div>
-      <input
-        className="search"
-        type="text"
-        placeholder="Search movies..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <p className="num-results">
-        Found <strong>{movies?.length}</strong> results
-      </p>
-    </nav>
-  );
-}
-function Movies({ movies }) {
-  return (
-    <ul className="list">
-      {movies?.map((movie) => (
-        <li key={movie.imdbID}>
-          <img src={movie.Poster} alt={`${movie.Title} poster`} />
-          <h3>{movie.Title}</h3>
-          <div>
-            <p>
-              <span>🗓</span>
-              <span>{movie.Year}</span>
-            </p>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function Summary({ watched, avgImdbRating, avgUserRating, avgRuntime }) {
-  return (
-    <div className="summary">
-      <h2>Movies you watched</h2>
-      <div>
-        <p>
-          <span>#️⃣</span>
-          <span>{watched.length} movies</span>
-        </p>
-        <p>
-          <span>⭐️</span>
-          <span>{avgImdbRating}</span>
-        </p>
-        <p>
-          <span>🌟</span>
-          <span>{avgUserRating}</span>
-        </p>
-        <p>
-          <span>⏳</span>
-          <span>{avgRuntime} min</span>
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function Watched({ watched }) {
-  return (
-    <ul className="list">
-      {watched.map((movie) => (
-        <li key={movie.imdbID}>
-          <img src={movie.Poster} alt={`${movie.Title} poster`} />
-          <h3>{movie.Title}</h3>
-          <div>
-            <p>
-              <span>⭐️</span>
-              <span>{movie.imdbRating}</span>
-            </p>
-            <p>
-              <span>🌟</span>
-              <span>{movie.userRating}</span>
-            </p>
-            <p>
-              <span>⏳</span>
-              <span>{movie.runtime} min</span>
-            </p>
-          </div>
-        </li>
-      ))}
-    </ul>
   );
 }
