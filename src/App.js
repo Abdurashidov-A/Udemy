@@ -97,7 +97,7 @@ function Button({ isOpen, setIsOpen }) {
     </button>
   );
 }
-
+// something
 function Nav(query, setQuery, movies) {
   return (
     <nav className="nav-bar">
