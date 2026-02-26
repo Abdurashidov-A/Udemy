@@ -1,52 +1,130 @@
 import { useState } from "react";
 
-const tempMovieData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt0133093",
-    Title: "The Matrix",
-    Year: "1999",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt6751668",
-    Title: "Parasite",
-    Year: "2019",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
-  },
-];
+const tabs = ["Тип 1", "Тип 2"];
 
-const tempWatchedData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-    runtime: 148,
-    imdbRating: 8.8,
-    userRating: 10,
-  },
-  {
-    imdbID: "tt0088763",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-    runtime: 116,
-    imdbRating: 8.5,
-    userRating: 9,
-  },
+const items = [
+  { id: 1, name: "Item 1", value: 20 },
+  { id: 2, name: "Item 2", value: 30 },
+  { id: 3, name: "Item 3", value: 40 },
+  { id: 4, name: "Item 4", value: 50 },
 ];
 
 export default function App() {
-  return <main></main>;
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [selectedIds, setSelectedIds] = useState([3]);
+
+  function handleToggle(id) {
+    setSelectedIds((ids) =>
+      ids.includes(id) ? ids.filter((itemId) => itemId !== id) : [...ids, id],
+    );
+  }
+
+  const selectedItems = items.filter((item) => selectedIds.includes(item.id));
+  const totalValue = selectedItems.reduce((sum, item) => sum + item.value, 0);
+
+  return (
+    <main className="app">
+      <section className="panel">
+        <Header
+          activeTab={activeTab}
+          selectedCount={selectedItems.length}
+          totalValue={totalValue}
+        />
+
+        <div className="content">
+          <SideBar
+            tabs={tabs}
+            activeTab={activeTab}
+            onSelectTab={setActiveTab}
+          />
+          {activeTab === "Тип 1" && (
+            <section className="items intro">
+              <div className="intro-card">
+                <p className="intro-badge">Mini Dashboard</p>
+                <h2 className="intro-title">Панель выбора пунктов</h2>
+                <p className="intro-text">
+                  Откройте раздел &quot;Тип 2&quot;, чтобы отметить элементы и
+                  сразу увидеть итоговые показатели в шапке.
+                </p>
+                <button
+                  className="cta-button"
+                  onClick={() => setActiveTab(tabs[1])}
+                  type="button"
+                >
+                  Перейти в Тип 2
+                </button>
+              </div>
+            </section>
+          )}
+
+          {activeTab === "Тип 2" && (
+            <section className="items">
+              <div className="items-list">
+                {items.map((item, index) => (
+                  <label
+                    className={`item-row ${
+                      selectedIds.includes(item.id) ? "item-selected" : ""
+                    }`}
+                    key={item.id}
+                    style={{ animationDelay: `${index * 90}ms` }}
+                  >
+                    <span className="item-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(item.id)}
+                        onChange={() => handleToggle(item.id)}
+                      />
+                      <span className="item-title">{item.name}</span>
+                    </span>
+                    <span className="item-value">Value: {item.value}</span>
+                  </label>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function Header({ activeTab, selectedCount, totalValue }) {
+  return (
+    <header className="header">
+      <div>
+        <p className="header-label">Раздел</p>
+        <h1 className="header-title">{activeTab}</h1>
+      </div>
+      <div className="header-stats">
+        {activeTab !== "Тип 1" && (
+          <>
+            <span className="stat-pill">Выбрано: {selectedCount}</span>
+            <span className="stat-pill">Сумма: {totalValue}</span>
+          </>
+        )}
+        {activeTab === "Тип 1" && (
+          <span className="header-hint">Откройте &quot;Тип 2&quot; для работы</span>
+        )}
+      </div>
+    </header>
+  );
+}
+
+function SideBar({ tabs, activeTab, onSelectTab }) {
+  return (
+    <aside className="sidebar">
+      <p className="sidebar-title">Разделы</p>
+      {tabs.map((tab) => (
+        <button
+          className={`tab ${activeTab === tab ? "tab-active" : ""}`}
+          key={tab}
+          onClick={() => onSelectTab(tab)}
+          type="button"
+        >
+          <span className="tab-dot" />
+          <span>{tab}</span>
+        </button>
+      ))}
+    </aside>
+  );
 }
